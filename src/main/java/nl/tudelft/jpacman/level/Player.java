@@ -20,6 +20,11 @@ public class Player extends Unit {
     private int score;
 
     /**
+     * The amount of lives the player has
+     */
+    private int lives;
+
+    /**
      * The animations for every direction.
      */
     private final Map<Direction, Sprite> sprites;
@@ -52,6 +57,7 @@ public class Player extends Unit {
         this.alive = true;
         this.sprites = spriteMap;
         this.deathSprite = deathAnimation;
+        this.lives = 3;
         deathSprite.setAnimating(false);
     }
 
@@ -72,7 +78,7 @@ public class Player extends Unit {
      * @param isAlive
      *            <code>true</code> iff this player is alive.
      */
-    public void setAlive(boolean isAlive) {
+    private void setAlive(boolean isAlive) {
         if (isAlive) {
             deathSprite.setAnimating(false);
             this.killer = null;
@@ -81,6 +87,19 @@ public class Player extends Unit {
             deathSprite.restart();
         }
         this.alive = isAlive;
+    }
+
+    /**
+     * Decrements players lives until it reaches 0.
+     * @param killer is the pacman that entered in collision with the player
+     */
+    public void playerHit(Unit killer) {
+        this.lives--;
+
+        if(this.lives <= 0) {
+            this.setAlive(false);
+            this.setKiller(killer);
+        }
     }
 
     /**
@@ -97,7 +116,7 @@ public class Player extends Unit {
      *
      * @param killer is set if collision with ghost happens.
      */
-    public void setKiller(Unit killer) {
+    private void setKiller(Unit killer) {
         this.killer =  killer;
     }
 
